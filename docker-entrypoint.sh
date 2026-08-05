@@ -45,8 +45,31 @@ if [ "$PROCESS_TYPE" = "worker" ]; then
   exec bundle exec sidekiq
 fi
 
-echo "==> Running database migrations"
-bundle exec rake db:migrate
+echo "==> Testing full Rails boot (bounded to 120s)"
+set +e
+timeout 120 bundle exec bin/rails runner "puts 'RAILS BOOT OK'"
+BOOT_EXIT=$?
+set -e
+if [ "$BOOT_EXIT" -eq 124 ]; then
+  echo "RAILS BOOT TIMED OUT after 120s"
+  exit 1
+elif [ "$BOOT_EXIT" -ne 0 ]; then
+  echo "RAILS BOOT FAILED with exit code $BOOT_EXIT"
+  exit 1
+fi
+
+echo "==> Running database migrations (bounded to 300s)"
+set +e
+timeout 300 bundle exec rake db:migrate
+MIGRATE_EXIT=$?
+set -e
+if [ "$MIGRATE_EXIT" -eq 124 ]; then
+  echo "MIGRATE TIMED OUT after 300s"
+  exit 1
+elif [ "$MIGRATE_EXIT" -ne 0 ]; then
+  echo "MIGRATE FAILED with exit code $MIGRATE_EXIT"
+  exit 1
+fi
 
 echo "==> Precompiling assets"
 bundle exec rake assets:precompile
