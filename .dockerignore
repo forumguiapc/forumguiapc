@@ -1,0 +1,11 @@
+.git
+log/*
+tmp/*
+public/assets
+public/uploads
+public/backups
+node_modules
+.env
+.env.*
+*.rbc
+.byebug_history
