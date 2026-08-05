@@ -30,6 +30,15 @@ WORKDIR /app
 
 COPY . .
 
+# Discourse's build scripts (assemble_ember_build.rb, version lookups) shell
+# out to git. We exclude .git from the build context (909MB, full fork
+# history) so we synthesize a minimal valid repo matching the copied tree.
+RUN git init -q \
+    && git config user.email "build@localhost" \
+    && git config user.name "Docker Build" \
+    && git add -A \
+    && git commit -q -m "docker build snapshot" --allow-empty
+
 RUN bundle install --jobs 4 --retry 3
 
 RUN corepack prepare pnpm@10.28.0 --activate \
