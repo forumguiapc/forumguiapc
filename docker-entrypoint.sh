@@ -58,13 +58,13 @@ elif [ "$BOOT_EXIT" -ne 0 ]; then
   exit 1
 fi
 
-echo "==> Running database migrations (bounded to 300s)"
+echo "==> Running database migrations (bounded to 1800s)"
 set +e
-timeout 300 bundle exec rake db:migrate
+timeout 1800 bundle exec rake db:migrate
 MIGRATE_EXIT=$?
 set -e
 if [ "$MIGRATE_EXIT" -eq 124 ]; then
-  echo "MIGRATE TIMED OUT after 300s"
+  echo "MIGRATE TIMED OUT after 1800s"
   exit 1
 elif [ "$MIGRATE_EXIT" -ne 0 ]; then
   echo "MIGRATE FAILED with exit code $MIGRATE_EXIT"
