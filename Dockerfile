@@ -3,7 +3,7 @@ FROM ruby:3.4.7-slim-bookworm
 ENV DEBIAN_FRONTEND=noninteractive \
     LANG=C.UTF-8 \
     RAILS_ENV=production \
-    BUNDLE_WITHOUT=development:test
+    BUNDLE_WITHOUT=development
 
 RUN apt-get update -qq && apt-get install -y --no-install-recommends \
       build-essential \
@@ -21,10 +21,13 @@ RUN apt-get update -qq && apt-get install -y --no-install-recommends \
       libyaml-dev \
       libffi-dev \
       imagemagick \
+      brotli \
+      gzip \
     && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && corepack enable \
-    && rm -rf /var/lib/apt/lists/*
+    && rm -rf /var/lib/apt/lists/* \
+    && ln -s /usr/bin/convert /usr/bin/magick
 
 WORKDIR /app
 

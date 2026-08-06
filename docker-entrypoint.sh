@@ -75,4 +75,4 @@ echo "==> Precompiling assets"
 bundle exec rake assets:precompile
 
 echo "==> Starting Puma on port ${PORT:-3000}"
-exec bundle exec puma -e production -p "${PORT:-3000}" -b "tcp://0.0.0.0:${PORT:-3000}"
+exec bundle exec puma -e production -b "tcp://0.0.0.0:${PORT:-3000}"
